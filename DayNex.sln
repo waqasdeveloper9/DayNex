@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{7D67B97E-B261-4435-89B2-D72350D3303F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DD100E68-AB18-4702-9AE8-68C8D0045CF7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dockers", "Dockers", "{2ACC1D7F-04E6-4535-958E-90AF1A933D53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GateWay", "GateWay", "{35979519-B2FC-4904-8590-1D7468D350D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6F68E272-BD05-49D0-A059-05C827A1E825}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{44922339-1CFD-4572-987A-27191D61519C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.Domain", "src\Shared\DayNex.Domain\DayNex.Domain\DayNex.Domain.csproj", "{A8609042-428B-4994-87FA-5DBE9DA2106C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.Contracts", "src\Shared\DayNex.Contracts\DayNex.Contracts\DayNex.Contracts.csproj", "{BE9F946F-B36F-470C-BCA9-AF1CEBA17439}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8609042-428B-4994-87FA-5DBE9DA2106C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8609042-428B-4994-87FA-5DBE9DA2106C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8609042-428B-4994-87FA-5DBE9DA2106C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8609042-428B-4994-87FA-5DBE9DA2106C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE9F946F-B36F-470C-BCA9-AF1CEBA17439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE9F946F-B36F-470C-BCA9-AF1CEBA17439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE9F946F-B36F-470C-BCA9-AF1CEBA17439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE9F946F-B36F-470C-BCA9-AF1CEBA17439}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{35979519-B2FC-4904-8590-1D7468D350D9} = {7D67B97E-B261-4435-89B2-D72350D3303F}
+		{6F68E272-BD05-49D0-A059-05C827A1E825} = {7D67B97E-B261-4435-89B2-D72350D3303F}
+		{44922339-1CFD-4572-987A-27191D61519C} = {7D67B97E-B261-4435-89B2-D72350D3303F}
+		{A8609042-428B-4994-87FA-5DBE9DA2106C} = {44922339-1CFD-4572-987A-27191D61519C}
+		{BE9F946F-B36F-470C-BCA9-AF1CEBA17439} = {44922339-1CFD-4572-987A-27191D61519C}
+	EndGlobalSection
+EndGlobal
