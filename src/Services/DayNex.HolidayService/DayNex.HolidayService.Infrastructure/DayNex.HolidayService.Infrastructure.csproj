@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\DayNex.Shared.Http\DayNex.Shared.Http.csproj" />
-    <ProjectReference Include="..\..\..\Shared\DayNex.Domain\DayNex.Domain.csproj" />
     <ProjectReference Include="..\DayNex.HolidayService.Application\DayNex.HolidayService.Application.csproj" />
   </ItemGroup>
 
