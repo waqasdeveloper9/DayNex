@@ -7,8 +7,8 @@ namespace DayNex.Shared.Http;
 public class ApiClient : IApiClient
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<ApiClient> _logger;
-
+    private readonly Microsoft.Extensions.Logging.ILogger<ApiClient> _logger;
+        
     public ApiClient(HttpClient httpClient, ILogger<ApiClient> logger)
     {
         _httpClient = httpClient;
@@ -25,7 +25,8 @@ public class ApiClient : IApiClient
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "GET request failed for {Endpoint}", endpoint);
+            _logger.LogError(ex, "Error occurred while calling API");
+
             throw;
         }
     }

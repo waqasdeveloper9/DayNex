@@ -1,4 +1,8 @@
 
+using DayNex.HolidayService.Application;
+using DayNex.HolidayService.Infrastructure;
+using DayNex.Shared.Http;
+
 namespace DayNex.HolidayService.API
 {
     public class Program
@@ -13,6 +17,9 @@ namespace DayNex.HolidayService.API
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            InterfaceDependency.AddApplication(builder.Services);
+            InfrastructureDependencies.AddInfrastructure(builder.Services,builder.Configuration);
+            HTTPDependencies.AddHttpService(builder.Services);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

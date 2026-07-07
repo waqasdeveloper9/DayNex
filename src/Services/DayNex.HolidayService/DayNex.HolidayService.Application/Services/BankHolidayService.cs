@@ -8,17 +8,15 @@ namespace DayNex.HolidayService.Application.Services;
 
 public class BankHolidayService : IBankHoliday
 {
-    private readonly IHolidayRepository _repository;
+    //private readonly IHolidayRepository _repository;
     private readonly IGovUkHolidayApiClient _apiClient;
     private readonly ILogger<BankHolidayService> _logger;
 
     public BankHolidayService(
-        IHolidayRepository repository,
         IGovUkHolidayApiClient apiClient,
         ILogger<BankHolidayService> logger)
     {
-        _repository = repository;
-        _apiClient = apiClient;
+               _apiClient = apiClient;
         _logger = logger;
     }
 
@@ -88,14 +86,14 @@ public class BankHolidayService : IBankHoliday
 
             foreach (var holiday in division.Events)
             {
-                var exists = await _repository.ExistsAsync(
-                    holiday.Title,
-                    holiday.Date,
-                    region,
-                    cancellationToken);
+                //var exists = await _repository.ExistsAsync(
+                //    holiday.Title,
+                //    holiday.Date,
+                //    region,
+                //    cancellationToken);
 
-                if (exists)
-                    continue;
+                //if (exists)
+                //    continue;
 
                 newHolidays.Add(new BankHoliday(
                     region,
