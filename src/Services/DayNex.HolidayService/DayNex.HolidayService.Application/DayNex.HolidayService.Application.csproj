@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\DayNex.Shared.Http\DayNex.Shared.Http.csproj" />
+    <ProjectReference Include="..\..\..\Shared\DayNex.Domain\DayNex.Domain.csproj" />
     <ProjectReference Include="..\DayNex.HolidayService.Domain\DayNex.HolidayService.Domain.csproj" />
   </ItemGroup>
 

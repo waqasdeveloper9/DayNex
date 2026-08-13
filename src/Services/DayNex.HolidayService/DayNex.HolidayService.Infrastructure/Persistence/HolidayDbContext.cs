@@ -1,16 +1,28 @@
 ﻿using DayNex.HolidayService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DayNex.HolidayService.Infrastructure.Persistence
 {
     public class HolidayDbContext : DbContext
     {
-        public DbSet<BankHoliday>   BankHoliday { get; set; }   
+        public HolidayDbContext(DbContextOptions<HolidayDbContext> options)
+            : base(options)
+        {
+        }
 
+        public DbSet<BankHoliday> BankHoliday { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Optional but recommended: entity configuration yahan ya alag IEntityTypeConfiguration file mein
+            modelBuilder.Entity<BankHoliday>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+                // baqi property configurations agar chahiye
+            });
+        }
     }
 }

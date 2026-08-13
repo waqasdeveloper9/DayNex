@@ -2,7 +2,7 @@
 
 namespace DayNex.HolidayService.Domain.Entities
 {
-    public class BankHoliday 
+    public class BankHoliday
     {
         private BankHoliday()
         {
@@ -15,6 +15,7 @@ namespace DayNex.HolidayService.Domain.Entities
             string? notes,
             bool bunting)
         {
+            Id = Guid.NewGuid();   // ✅ generate karo constructor mein
             Region = region;
             Date = date;
             Title = title;
@@ -22,6 +23,7 @@ namespace DayNex.HolidayService.Domain.Entities
             Bunting = bunting;
         }
 
+        public Guid Id { get; private set; }   // ✅ add kiya
         public Region Region { get; set; }
         public DateOnly Date { get; set; }
         public string Title { get; set; } = string.Empty;

@@ -1,4 +1,5 @@
-﻿using DayNex.HolidayService.Application.Common.Interfaces;
+﻿using DayNex.Domain.Common.Interface;
+using DayNex.HolidayService.Application.Common.Interfaces;
 using DayNex.HolidayService.Application.DTOs;
 using DayNex.HolidayService.Domain.Entities;
 using DayNex.HolidayService.Domain.Enums;
@@ -8,41 +9,24 @@ namespace DayNex.HolidayService.Application.Services;
 
 public class BankHolidayService : IBankHoliday
 {
-    //private readonly IHolidayRepository _repository;
+    private readonly IRepository<BankHoliday> _repository;
     private readonly IGovUkHolidayApiClient _apiClient;
     private readonly ILogger<BankHolidayService> _logger;
 
     public BankHolidayService(
         IGovUkHolidayApiClient apiClient,
-        ILogger<BankHolidayService> logger)
+        IRepository<BankHoliday> repository,
+    ILogger<BankHolidayService> logger)
     {
-               _apiClient = apiClient;
+         _apiClient = apiClient;
         _logger = logger;
+        _repository = repository;
     }
-
-    //public async Task<List<BankHolidayDto>> GetByRegionAsync(
-    //    Region region, CancellationToken cancellationToken = default)
-    //{
-    //    var holidays = await _repository.GetByRegionAsync(region, cancellationToken);
-
-    //    return holidays.Select(MapToDto).ToList();
-    //}
-
-    //public async Task<BankHolidayDto?> GetNextHolidayAsync(
-    //    Region region, CancellationToken cancellationToken = default)
-    //{
-    //    var today = DateOnly.FromDateTime(DateTime.UtcNow);
-    //    var holiday = await _repository.GetNextHolidayAsync(region, today, cancellationToken);
-
-    //    return holiday is null ? null : MapToDto(holiday);
-    //}
 
     public async Task<int> SyncHolidaysFromGovApiAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Starting holiday sync from GOV.UK API");
-
         var response = await _apiClient.FetchBankHolidaysAsync(cancellationToken);
-
         if (response is null)
         {
             _logger.LogWarning("GOV.UK API returned null response");
@@ -50,23 +34,19 @@ public class BankHolidayService : IBankHoliday
         }
 
         var newHolidays = new List<BankHoliday>();
-        
-        await CollectNewHolidaysAsync(
-            response,
-            newHolidays,
-            cancellationToken);
+        await CollectNewHolidaysAsync(response, newHolidays, cancellationToken);
 
         if (newHolidays.Count > 0)
         {
-            //await _repository.AddRangeAsync(newHolidays, cancellationToken);
-            //await _repository.SaveChangesAsync(cancellationToken);
+            await _repository.AddRangeAsync(newHolidays);
+            await _repository.SaveChangesAsync(cancellationToken);
         }
 
         _logger.LogInformation("Holiday sync completed. {Count} new records inserted", newHolidays.Count);
-
         return newHolidays.Count;
     }
 
+   
     private async Task CollectNewHolidaysAsync(
        GovUkApiResponseDto response,
        List<BankHoliday> newHolidays,
