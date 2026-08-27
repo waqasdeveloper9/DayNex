@@ -16,12 +16,12 @@ namespace DayNex.HolidayService.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            // Optional but recommended: entity configuration yahan ya alag IEntityTypeConfiguration file mein
+
             modelBuilder.Entity<BankHoliday>(entity =>
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
-                // baqi property configurations agar chahiye
+                
             });
         }
     }

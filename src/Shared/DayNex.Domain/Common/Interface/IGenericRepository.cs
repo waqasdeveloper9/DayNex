@@ -12,9 +12,9 @@ namespace DayNex.Domain.Common.Interface
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> GetAsync(ISpecification<T> spec);
         Task AddAsync(T entity);
-        Task AddRangeAsync(IEnumerable<T> entities);   // ← naya
+        Task AddRangeAsync(IEnumerable<T> entities);  
         Task UpdateAsync(T entity);
         Task DeleteAsync(Guid id);
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);  // ← ye be chahiye
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);  
     }
 }
