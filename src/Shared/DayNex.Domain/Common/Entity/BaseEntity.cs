@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DayNex.Domain.Common.Interface;
 
 namespace DayNex.Domain.Common.Entity
 {
-    public abstract class BaseEntity
+    public abstract class BaseEntity : IEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAtUtc { get; set; }
+        public Guid Id { get; protected set; } = Guid.NewGuid();
+        public DateTime CreatedAtUtc { get; protected set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAtUtc { get; protected set; }
+        public bool IsDeleted { get; protected set; }
+
+        public void MarkUpdated() => UpdatedAtUtc = DateTime.UtcNow;
+
+        public void SoftDelete()
+        {
+            IsDeleted = true;
+            MarkUpdated();
+        }
     }
 }
