@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>DayNex.IdentityService.API</RootNamespace>
+    <UserSecretsId>daynex-identityservice-secrets</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DayNex.IdentityService.Application\DayNex.IdentityService.Application.csproj" />
+    <ProjectReference Include="..\DayNex.IdentityService.Infrastructure\DayNex.IdentityService.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\Shared\DayNex.Shared.Http\DayNex.Shared.Http.csproj" />
+  </ItemGroup>
+
+</Project>
