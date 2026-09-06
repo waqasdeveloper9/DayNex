@@ -1,8 +1,9 @@
-﻿using DayNex.HolidayService.Domain.Enums;
+﻿using DayNex.Domain.Common.Interface;
+using DayNex.HolidayService.Domain.Enums;
 
 namespace DayNex.HolidayService.Domain.Entities
 {
-    public class BankHoliday
+    public class BankHoliday : IEntity
     {
         private BankHoliday()
         {

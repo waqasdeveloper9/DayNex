@@ -9,13 +9,13 @@ namespace DayNex.HolidayService.Application.Services;
 
 public class BankHolidayService : IBankHoliday
 {
-    private readonly IRepository<BankHoliday> _repository;
+    private readonly IGenericRepository<BankHoliday> _repository;
     private readonly IGovUkHolidayApiClient _apiClient;
     private readonly ILogger<BankHolidayService> _logger;
 
     public BankHolidayService(
         IGovUkHolidayApiClient apiClient,
-        IRepository<BankHoliday> repository,
+        IGenericRepository<BankHoliday> repository,
     ILogger<BankHolidayService> logger)
     {
          _apiClient = apiClient;

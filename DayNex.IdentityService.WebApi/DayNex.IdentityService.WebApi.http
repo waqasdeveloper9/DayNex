@@ -1,0 +1,6 @@
+@DayNex.IdentityService.WebApi_HostAddress = http://localhost:5289
+
+GET {{DayNex.IdentityService.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

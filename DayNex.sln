@@ -40,6 +40,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DayNex.IdentityService", "DayNex.IdentityService", "{1270758C-BEF6-41BF-B847-2FB59E67AFE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.IdentityService.WebApi", "DayNex.IdentityService.WebApi\DayNex.IdentityService.WebApi.csproj", "{45C4F51C-EB61-4F35-8DD3-E549B8EC5C18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.IdentityService.Infrastructure", "DayNex.IdentityService.Infrastructure\DayNex.IdentityService.Infrastructure.csproj", "{FA7E0171-5925-4A6E-BEA3-35010A212A0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.IdentityService.Domain", "DayNex.IdentityService.Domain\DayNex.IdentityService.Domain.csproj", "{D228BA6D-F7A4-4664-AFA7-37863EC2EA9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.IdentityService.Application", "DayNex.IdentityService.Application\DayNex.IdentityService.Application.csproj", "{EDB10DA9-4D5D-457E-9C80-90A5B9DA08CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +88,22 @@ Global
 		{E633B6A6-C29A-43A6-BD0D-93B59022F925}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E633B6A6-C29A-43A6-BD0D-93B59022F925}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E633B6A6-C29A-43A6-BD0D-93B59022F925}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45C4F51C-EB61-4F35-8DD3-E549B8EC5C18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45C4F51C-EB61-4F35-8DD3-E549B8EC5C18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45C4F51C-EB61-4F35-8DD3-E549B8EC5C18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45C4F51C-EB61-4F35-8DD3-E549B8EC5C18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA7E0171-5925-4A6E-BEA3-35010A212A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA7E0171-5925-4A6E-BEA3-35010A212A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA7E0171-5925-4A6E-BEA3-35010A212A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA7E0171-5925-4A6E-BEA3-35010A212A0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D228BA6D-F7A4-4664-AFA7-37863EC2EA9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D228BA6D-F7A4-4664-AFA7-37863EC2EA9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D228BA6D-F7A4-4664-AFA7-37863EC2EA9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D228BA6D-F7A4-4664-AFA7-37863EC2EA9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDB10DA9-4D5D-457E-9C80-90A5B9DA08CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDB10DA9-4D5D-457E-9C80-90A5B9DA08CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDB10DA9-4D5D-457E-9C80-90A5B9DA08CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDB10DA9-4D5D-457E-9C80-90A5B9DA08CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +122,10 @@ Global
 		{F6E2C68E-3F0F-42A1-A2F4-F434E4A20F1D} = {F6468A1B-668B-43C6-9D8F-DDF343001F5A}
 		{E633B6A6-C29A-43A6-BD0D-93B59022F925} = {44922339-1CFD-4572-987A-27191D61519C}
 		{DA1B42BF-70D7-414E-8313-3E48D9DE4A67} = {6F68E272-BD05-49D0-A059-05C827A1E825}
+		{1270758C-BEF6-41BF-B847-2FB59E67AFE4} = {6F68E272-BD05-49D0-A059-05C827A1E825}
+		{45C4F51C-EB61-4F35-8DD3-E549B8EC5C18} = {1270758C-BEF6-41BF-B847-2FB59E67AFE4}
+		{FA7E0171-5925-4A6E-BEA3-35010A212A0D} = {1270758C-BEF6-41BF-B847-2FB59E67AFE4}
+		{D228BA6D-F7A4-4664-AFA7-37863EC2EA9E} = {1270758C-BEF6-41BF-B847-2FB59E67AFE4}
+		{EDB10DA9-4D5D-457E-9C80-90A5B9DA08CF} = {1270758C-BEF6-41BF-B847-2FB59E67AFE4}
 	EndGlobalSection
 EndGlobal
