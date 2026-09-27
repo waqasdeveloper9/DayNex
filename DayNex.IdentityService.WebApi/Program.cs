@@ -1,4 +1,6 @@
 
+using DayNex.IdentityService.Infrastructure;
+
 namespace DayNex.IdentityService.WebApi
 {
     public class Program
@@ -12,7 +14,8 @@ namespace DayNex.IdentityService.WebApi
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-
+            IdentityInfrastructureDependencies.AddIdentityInfrastructure(builder.Services, builder.Configuration);
+            IdentityApplicationDependencies.AddIdentityApplication(builder.Services, builder.Configuration);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
