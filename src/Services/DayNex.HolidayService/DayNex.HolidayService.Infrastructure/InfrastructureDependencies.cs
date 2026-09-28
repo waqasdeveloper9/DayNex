@@ -19,9 +19,8 @@ namespace DayNex.HolidayService.Infrastructure
 
 
             services.AddScoped<IGovUkHolidayApiClient, GovUkHolidayApiClient>();
-            services.AddScoped<IBankHoliday, BankHolidayService>();
             services.Configure<GovUkApiSettings>(configuration.GetSection("GovUkApiSettings"));
-            services.AddScoped(typeof(IGenericRepository<IEntity>), typeof(HolidayEfRepository<IEntity>));
+            services.AddScoped(typeof(IGenericRepository<>), typeof(HolidayEfRepository<>));
             return services;
 
         }
