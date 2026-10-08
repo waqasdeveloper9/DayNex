@@ -21,6 +21,8 @@ namespace DayNex.HolidayService.Infrastructure.Persistence
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Title).UseCollation("Latin1_General_100_BIN2");
+                entity.HasIndex(e => new { e.Region, e.Date, e.Title }).IsUnique();
                 
             });
         }

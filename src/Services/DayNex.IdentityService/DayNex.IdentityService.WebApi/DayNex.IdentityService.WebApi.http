@@ -1,0 +1,12 @@
+@host = https://localhost:7166
+# Set accessToken privately in your HTTP client's environment.
+@accessToken =
+
+GET {{host}}/api/identity/me
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+###
+GET {{host}}/api/identity/me/permissions
+Authorization: Bearer {{accessToken}}
+Accept: application/json

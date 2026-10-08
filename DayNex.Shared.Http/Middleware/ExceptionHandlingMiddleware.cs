@@ -1,50 +1,42 @@
-﻿using Microsoft.AspNetCore.Builder;
+using DayNex.Shared.Http.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Net;
-using System.Text.Json;
+using Polly.Timeout;
+using Polly.CircuitBreaker;
 
-namespace DayNex.Shared.Http.Middleware
+namespace DayNex.Shared.Http.Middleware;
+
+public sealed class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
 {
-    public class ExceptionHandlingMiddleware
+    public async Task InvokeAsync(HttpContext context)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
-
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+        try { await next(context); }
+        catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
         {
-            _next = next;
-            _logger = logger;
+            // The client disconnected. Do not try to write to a closed response.
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        catch (Exception ex)
         {
-            try
+            logger.LogError(ex, "Request failed at {Path}; trace {TraceId}", context.Request.Path, context.TraceIdentifier);
+            if (context.Response.HasStarted) throw;
+            context.Response.Clear();
+            var (status, title) = ex switch
             {
-                await _next(context);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unhandled exception processing {Path}", context.Request.Path);
-
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-                var payload = JsonSerializer.Serialize(new
-                {
-                    succeeded = false,
-                    error = "An unexpected error occurred.",
-                    errorCode = "INTERNAL_SERVER_ERROR"
-                });
-
-                await context.Response.WriteAsync(payload);
-            }
+                PermissionServiceUnavailableException => (503, "The permission service is temporarily unavailable."),
+                HttpRequestException => (502, "An upstream service failed."),
+                TimeoutRejectedException or OperationCanceledException => (504, "An upstream service timed out."),
+                BrokenCircuitException => (503, "An upstream service is temporarily unavailable."),
+                _ => (500, "An unexpected error occurred.")
+            };
+            await Results.Problem(statusCode: status, title: title,
+                extensions: new Dictionary<string, object?> { ["traceId"] = context.TraceIdentifier }).ExecuteAsync(context);
         }
     }
+}
 
-    public static class ExceptionHandlingMiddlewareExtensions
-    {
-        public static IApplicationBuilder UseDayNexExceptionHandling(this IApplicationBuilder app)
-            => app.UseMiddleware<ExceptionHandlingMiddleware>();
-    }
+public static class ExceptionHandlingMiddlewareExtensions
+{
+    public static IApplicationBuilder UseDayNexExceptionHandling(this IApplicationBuilder app) =>
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
 }

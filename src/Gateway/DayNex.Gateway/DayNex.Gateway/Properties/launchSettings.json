@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "DayNex.Gateway": {
@@ -6,7 +6,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "health",
-      "applicationUrl": "http://localhost:5929",
+      "applicationUrl": "https://localhost:7250;http://localhost:5929",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

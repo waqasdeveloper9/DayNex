@@ -1,6 +1,7 @@
-@DayNex.HolidayService.API_HostAddress = http://localhost:5088
+@host = https://localhost:7175
+# Requires a verified user with the database Admin or SuperAdmin role.
+@accessToken =
 
-GET {{DayNex.HolidayService.API_HostAddress}}/weatherforecast/
+POST {{host}}/api/BankHoliday/sync
+Authorization: Bearer {{accessToken}}
 Accept: application/json
-
-###

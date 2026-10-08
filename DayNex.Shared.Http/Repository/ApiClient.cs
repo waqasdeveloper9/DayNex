@@ -19,7 +19,7 @@ public class ApiClient : IApiClient
     {
         try
         {
-            var response = await _httpClient.GetAsync(endpoint, cancellationToken);
+            using var response = await _httpClient.GetAsync(endpoint, cancellationToken);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
         }
@@ -33,21 +33,21 @@ public class ApiClient : IApiClient
 
     public async Task<T?> PostAsync<T>(string endpoint, object payload, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PostAsJsonAsync(endpoint, payload, cancellationToken);
+        using var response = await _httpClient.PostAsJsonAsync(endpoint, payload, cancellationToken);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
     }
 
     public async Task<T?> PutAsync<T>(string endpoint, object payload, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PutAsJsonAsync(endpoint, payload, cancellationToken);
+        using var response = await _httpClient.PutAsJsonAsync(endpoint, payload, cancellationToken);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
     }
 
     public async Task DeleteAsync(string endpoint, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.DeleteAsync(endpoint, cancellationToken);
+        using var response = await _httpClient.DeleteAsync(endpoint, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 }

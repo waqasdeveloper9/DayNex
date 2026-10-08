@@ -1,0 +1,60 @@
+{
+  "info": {
+    "name": "DayNex customer authentication",
+    "description": "Get an Entra External ID access token through Google sign-in using docs/Authentication.md. Set access_token locally and run these checks with a normal User account. No frontend is required.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{access_token}}", "type": "string" } ] },
+  "item": [
+    {
+      "name": "01 Gateway health",
+      "request": { "method": "GET", "auth": { "type": "noauth" }, "url": "{{gateway_url}}/health" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Gateway is running', () => pm.response.to.have.status(200));" ] } } ]
+    },
+    {
+      "name": "02 Missing token is rejected at gateway",
+      "request": { "method": "GET", "auth": { "type": "noauth" }, "url": "{{gateway_url}}/api/identity/me" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Missing token returns 401', () => pm.response.to.have.status(401));" ] } } ]
+    },
+    {
+      "name": "03 Invalid token is rejected",
+      "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "not-a-valid-token", "type": "string" } ] }, "url": "{{gateway_url}}/api/identity/me" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Invalid token returns 401', () => pm.response.to.have.status(401));" ] } } ]
+    },
+    {
+      "name": "04 First login creates or loads profile",
+      "request": { "method": "GET", "url": "{{gateway_url}}/api/identity/me" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Authenticated profile returns 200', () => pm.response.to.have.status(200));", "if (pm.response.code === 200) { const user = pm.response.json(); pm.environment.set('daynex_user_id', user.id); pm.test('Normal account has User role', () => pm.expect(user.role).to.eql('User')); pm.test('New account starts Free', () => pm.expect(user.subscriptionTier).to.eql('Free')); }" ] } } ]
+    },
+    {
+      "name": "05 Repeat login returns same user",
+      "request": { "method": "GET", "url": "{{gateway_url}}/api/identity/me" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Profile returns 200', () => pm.response.to.have.status(200));", "if (pm.response.code === 200) pm.test('No duplicate account', () => pm.expect(pm.response.json().id).to.eql(pm.environment.get('daynex_user_id')));" ] } } ]
+    },
+    {
+      "name": "06 Query parameters cannot change caller identity",
+      "request": { "method": "GET", "url": "{{gateway_url}}/api/identity/me?externalId=attacker&email=attacker%40example.test&displayName=Fake" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Profile returns 200', () => pm.response.to.have.status(200));", "if (pm.response.code === 200) pm.test('Identity remains token owner', () => pm.expect(pm.response.json().id).to.eql(pm.environment.get('daynex_user_id')));" ] } } ]
+    },
+    {
+      "name": "07 Read own permissions",
+      "request": { "method": "GET", "url": "{{gateway_url}}/api/identity/me/permissions" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Permissions return 200', () => pm.response.to.have.status(200));", "if (pm.response.code === 200) pm.test('Normal user cannot sync holidays', () => pm.expect(pm.response.json().permissions).not.to.include('holidays.sync'));" ] } } ]
+    },
+    {
+      "name": "08 Normal user cannot sync holidays",
+      "request": { "method": "POST", "url": "{{gateway_url}}/api/holidays/sync" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Database permission is enforced', () => pm.response.to.have.status(403));" ] } } ]
+    },
+    {
+      "name": "09 Direct Identity API rejects missing token",
+      "request": { "method": "GET", "auth": { "type": "noauth" }, "url": "{{identity_url}}/api/identity/me" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Direct API returns 401', () => pm.response.to.have.status(401));" ] } } ]
+    },
+    {
+      "name": "10 Direct Holiday API rejects missing token",
+      "request": { "method": "POST", "auth": { "type": "noauth" }, "url": "{{holiday_url}}/api/BankHoliday/sync" },
+      "event": [ { "listen": "test", "script": { "exec": [ "pm.test('Direct API returns 401', () => pm.response.to.have.status(401));" ] } } ]
+    }
+  ]
+}
