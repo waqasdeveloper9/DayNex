@@ -48,6 +48,8 @@ public partial class Program
                 }
                 await next();
             });
+            // Explicit placement prevents automatic fallback authorization before the anonymous health branch.
+            app.UseAuthorization();
             await app.UseOcelot();
             await app.RunAsync();
         }

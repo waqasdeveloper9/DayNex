@@ -1,0 +1,39 @@
+name: daynex-local
+services:
+  identity:
+    image: daynex-identity:local
+    build:
+      context: .
+      dockerfile: src/Services/DayNex.IdentityService/DayNex.IdentityService.WebApi/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: ${DAYNEX_IDENTITY_CONNECTION:?Run tools/Start-LocalContainers.ps1}
+    ports:
+      - "127.0.0.1:18081:8080"
+  holiday:
+    image: daynex-holiday:local
+    build:
+      context: .
+      dockerfile: src/Services/DayNex.HolidayService/DayNex.HolidayService.API/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: ${DAYNEX_HOLIDAY_CONNECTION:?Run tools/Start-LocalContainers.ps1}
+      IdentityService__BaseUrl: http://identity:8080/
+    ports:
+      - "127.0.0.1:18082:8080"
+    depends_on:
+      - identity
+  gateway:
+    image: daynex-gateway:local
+    build:
+      context: .
+      dockerfile: src/Gateway/DayNex.Gateway/DayNex.Gateway/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    volumes:
+      - ./deploy/local/ocelot.json:/app/ocelot.json:ro
+    ports:
+      - "127.0.0.1:18080:8080"
+    depends_on:
+      - identity
+      - holiday

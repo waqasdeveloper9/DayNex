@@ -1,0 +1,21 @@
+# Optional overlay: existing three-service startup remains available before the Vehicle DB is created.
+services:
+  vehicle:
+    image: daynex-vehicle:local
+    build:
+      context: .
+      dockerfile: src/Services/DayNex.VehicleService/DayNex.VehicleService.API/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: ${DAYNEX_VEHICLE_CONNECTION:?Configure Vehicle database secret first}
+      IdentityService__BaseUrl: http://identity:8080/
+      Dvla__Enabled: ${DAYNEX_DVLA_ENABLED:-false}
+      Dvla__ApiKey: ${DAYNEX_DVLA_KEY:-}
+      Dvla__Proxy__Enabled: ${DAYNEX_PROXY_ENABLED:-false}
+      Dvla__Proxy__Address: ${DAYNEX_PROXY_ADDRESS:-}
+      Dvla__Proxy__Username: ${DAYNEX_PROXY_USERNAME:-}
+      Dvla__Proxy__Password: ${DAYNEX_PROXY_PASSWORD:-}
+    ports:
+      - "127.0.0.1:18083:8080"
+    depends_on:
+      - identity

@@ -18,4 +18,4 @@
     <ProjectReference Include="..\..\src\Services\DayNex.HolidayService\DayNex.HolidayService.API\DayNex.HolidayService.API.csproj" />
     <ProjectReference Include="..\..\src\Gateway\DayNex.Gateway\DayNex.Gateway\DayNex.Gateway.csproj" />
   </ItemGroup>
-</Project>
+<ItemGroup><ProjectReference Include="../../src/Services/DayNex.VehicleService/DayNex.VehicleService.API/DayNex.VehicleService.API.csproj" /></ItemGroup></Project>

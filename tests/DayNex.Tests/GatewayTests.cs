@@ -39,6 +39,13 @@ public sealed class GatewayProbeHandler : DelegatingHandler
 public sealed class GatewayTests
 {
     [Fact]
+    public async Task GatewayHealthIsAvailableWithoutAuthentication()
+    {
+        await using var factory = new GatewayFactory();
+        using var client = factory.CreateClient(new() { BaseAddress = new Uri("https://localhost"), AllowAutoRedirect = false });
+        Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/health")).StatusCode);
+    }
+    [Fact]
     public async Task GatewayRejectsMissingTokensAndWrongScopesBeforeForwarding()
     {
         await using var factory = new GatewayFactory();

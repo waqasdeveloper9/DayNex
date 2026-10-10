@@ -27,10 +27,6 @@ namespace DayNex.IdentityService.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CompanyNumber")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.Property<string>("HolidayRegion")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -43,10 +39,6 @@ namespace DayNex.IdentityService.Infrastructure.Migrations
 
                     b.Property<DateTime>("UpdatedUtc")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("VehicleRegistration")
-                        .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
 
                     b.HasKey("UserId");
 

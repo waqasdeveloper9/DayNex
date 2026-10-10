@@ -21,8 +21,6 @@ public sealed class CustomerPreferencesStore(IdentityDbContext context) : ICusto
     }
     private Task<int> UpdateAsync(CustomerPreferences value, CancellationToken cancellationToken) =>
         context.Set<CustomerPreferences>().Where(p => p.UserId == value.UserId).ExecuteUpdateAsync(setters => setters
-            .SetProperty(p => p.VehicleRegistration, value.VehicleRegistration)
-            .SetProperty(p => p.CompanyNumber, value.CompanyNumber)
             .SetProperty(p => p.Postcode, value.Postcode)
             .SetProperty(p => p.HolidayRegion, value.HolidayRegion)
             .SetProperty(p => p.UpdatedUtc, value.UpdatedUtc), cancellationToken);

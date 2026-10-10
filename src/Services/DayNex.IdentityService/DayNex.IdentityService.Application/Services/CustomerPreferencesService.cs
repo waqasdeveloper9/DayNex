@@ -19,10 +19,10 @@ public sealed class CustomerPreferencesService(IIdentityStore identities, ICusto
     {
         // Ownership comes from validated identity, never a user id in the request body.
         var value = CustomerPreferences.Create(await UserIdAsync(externalId, cancellationToken),
-            input.VehicleRegistration, input.CompanyNumber, input.Postcode, input.HolidayRegion, clock.GetUtcNow().UtcDateTime);
+            input.Postcode, input.HolidayRegion, clock.GetUtcNow().UtcDateTime);
         await preferences.SaveAsync(value, cancellationToken);
         return Map(value);
     }
     private static CustomerPreferencesDto Map(CustomerPreferences value) =>
-        new(value.VehicleRegistration, value.CompanyNumber, value.Postcode, value.HolidayRegion, true);
+        new(value.Postcode, value.HolidayRegion, true);
 }

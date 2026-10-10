@@ -19,18 +19,17 @@ public sealed class CustomerPreferencesTests
     [InlineData("gir0aa", "GIR 0AA")]
     public void DetailsAreNormalized(string input, string expected)
     {
-        var value = CustomerPreferences.Create(Guid.NewGuid(), "ab12 cde", "sc123456", input, "Scotland", DateTime.UtcNow);
+        var value = CustomerPreferences.Create(Guid.NewGuid(), input, "Scotland", DateTime.UtcNow);
         Assert.Equal(expected, value.Postcode);
-        Assert.Equal("AB12CDE", value.VehicleRegistration);
-        Assert.Equal("SC123456", value.CompanyNumber);
     }
     [Theory]
-    [InlineData("", "", "", "EnglandAndWales")]
-    [InlineData("SW1A 1AA", "!", "", "EnglandAndWales")]
-    [InlineData("SW1A 1AA", "", "123", "EnglandAndWales")]
-    [InlineData("SW1A 1AA", "", "", "Unknown")]
-    public void InvalidDetailsAreRejected(string postcode, string vehicle, string company, string region) =>
-        Assert.Throws<ArgumentException>(() => CustomerPreferences.Create(Guid.NewGuid(), vehicle, company, postcode, region, DateTime.UtcNow));
+    [InlineData("bad", "EnglandAndWales")]
+    [InlineData("SW1A 1AA", "Unknown")]
+    public void InvalidDetailsAreRejected(string postcode,string region) =>
+        Assert.Throws<ArgumentException>(()=>CustomerPreferences.Create(Guid.NewGuid(),postcode,region,DateTime.UtcNow));
+    [Fact]
+    public void PersonalDetailsCanBeSkipped() =>
+        Assert.Equal("",CustomerPreferences.Create(Guid.NewGuid(),"","EnglandAndWales",DateTime.UtcNow).Postcode);
     [Fact]
     public async Task PreferencesPersistAreIsolatedAndUpdatesDoNotCreateDuplicates()
     {

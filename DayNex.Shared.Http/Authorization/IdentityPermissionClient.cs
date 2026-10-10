@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.Extensions.Hosting;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
@@ -50,9 +51,10 @@ public static class IdentityPermissionDependencies
 {
     public static IServiceCollection AddIdentityPermissionClient(this IServiceCollection services, IConfiguration configuration)
     {
+        var environment = configuration["ASPNETCORE_ENVIRONMENT"];
         services.AddOptions<IdentityServiceOptions>().Bind(configuration.GetSection("IdentityService"))
             .Validate(o => Uri.TryCreate(o.BaseUrl, UriKind.Absolute, out var uri) &&
-                (uri.Scheme == Uri.UriSchemeHttps || (uri.Scheme == Uri.UriSchemeHttp && uri.IsLoopback)),
+                (uri.Scheme == Uri.UriSchemeHttps || (uri.Scheme == Uri.UriSchemeHttp && (uri.IsLoopback || string.Equals(environment, Environments.Development, StringComparison.OrdinalIgnoreCase)))),
                 "IdentityService:BaseUrl must use HTTPS (HTTP is allowed only for local development).")
             .ValidateOnStart();
         services.AddHttpClient<IPermissionSource, IdentityPermissionClient>((provider, client) =>

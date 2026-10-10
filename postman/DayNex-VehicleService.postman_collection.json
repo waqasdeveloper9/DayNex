@@ -1,0 +1,307 @@
+{
+  "info": {
+    "name": "DayNex VehicleService and optional onboarding",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Run after creating the Vehicle database and applying the reviewed migrations. User identity is derived from the bearer token; never send userId. Company API integration and insurance data are not implemented."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "01 Gateway health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{gateway_url}}/health",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Healthy\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Assets reject missing token",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{gateway_url}}/api/assets/me",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Unauthorized\", () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Load or create own Identity profile",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{gateway_url}}/api/identity/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Profile\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Skip optional personal details",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{gateway_url}}/api/identity/me/preferences",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"postcode\": \"\",\n  \"holidayRegion\": \"EnglandAndWales\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Skipped\", () => { pm.response.to.have.status(200); pm.expect(pm.response.json().onboardingCompleted).to.eql(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Read own saved references",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{gateway_url}}/api/assets/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Own references\", () => { pm.response.to.have.status(200); pm.expect(pm.response.json().vehicles).to.be.an(\"array\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Add first vehicle - replace test registration",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{gateway_url}}/api/assets/me/vehicles",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registrationNumber\": \"AB12CDE\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Reference saved\", () => { pm.response.to.have.status(200); pm.environment.set(\"vehicle_id\", pm.response.json().id); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Repeat add is idempotent",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{gateway_url}}/api/assets/me/vehicles",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registrationNumber\": \"AB12CDE\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Same reference\", () => { pm.response.to.have.status(200); pm.expect(pm.response.json().id).to.eql(pm.environment.get(\"vehicle_id\")); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 Add second vehicle",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{gateway_url}}/api/assets/me/vehicles",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registrationNumber\": \"XY12ZZZ\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Saved\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 Save company number - lookup pending",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{gateway_url}}/api/assets/me/companies",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"companyNumber\": \"SC123456\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Company reference saved\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 Refresh vehicle after five minute cooldown",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{gateway_url}}/api/assets/me/vehicles/{{vehicle_id}}/refresh"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Success or cooldown\", () => pm.expect([200,429]).to.include(pm.response.code));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 Invalid registration rejected",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{gateway_url}}/api/assets/me/vehicles",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registrationNumber\": \"../invalid\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Bad request\", () => pm.response.to.have.status(400));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 Delete own vehicle",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{gateway_url}}/api/assets/me/vehicles/{{vehicle_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Deleted\", () => pm.response.to.have.status(204));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
