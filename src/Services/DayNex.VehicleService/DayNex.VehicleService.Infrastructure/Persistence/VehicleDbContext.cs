@@ -1,4 +1,4 @@
-using DayNex.VehicleService.Domain;
+using DayNex.VehicleService.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DayNex.VehicleService.Infrastructure;

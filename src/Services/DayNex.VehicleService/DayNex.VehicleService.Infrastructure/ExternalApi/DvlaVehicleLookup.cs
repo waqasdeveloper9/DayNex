@@ -1,8 +1,8 @@
 using System.Net;
 using System.Text.Json;
-using DayNex.Shared.Http;
+using DayNex.Shared.Http.Interface;
 using DayNex.VehicleService.Application;
-using DayNex.VehicleService.Domain;
+using DayNex.VehicleService.Domain.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using Polly.Timeout;
@@ -12,7 +12,7 @@ namespace DayNex.VehicleService.Infrastructure;
 public sealed record DvlaVehicleRequest(string RegistrationNumber);
 public sealed record DvlaErrorResponse(DvlaError[] Errors);
 public sealed record DvlaError(string? Status, string? Code, string Title, string? Detail);
-public sealed class DvlaVehicleLookup(ApiClient client, IOptions<DvlaOptions> options, ILogger<DvlaVehicleLookup> logger) : IVehicleLookup
+public sealed class DvlaVehicleLookup(IApiClient client, IOptions<DvlaOptions> options, ILogger<DvlaVehicleLookup> logger) : IVehicleLookup
 {
     public async Task<VehicleLookupResult> LookupAsync(string registration, CancellationToken token)
     {

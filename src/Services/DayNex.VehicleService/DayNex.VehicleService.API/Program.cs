@@ -2,6 +2,7 @@ using DayNex.Shared.Http.Authentication;
 using DayNex.Shared.Http.Hosting;
 using DayNex.Shared.Http.Middleware;
 using DayNex.VehicleService.Infrastructure;
+using DayNex.VehicleService.Application;
 
 namespace DayNex.VehicleService.API;
 public partial class Program
@@ -15,6 +16,7 @@ public partial class Program
         builder.Services.AddOpenApi();
         builder.Services.AddDayNexAuthentication(builder.Configuration);
         builder.Services.AddDayNexApiDefaults(builder.Configuration);
+        builder.Services.AddVehicleApplication();
         builder.Services.AddVehicleInfrastructure(builder.Configuration, builder.Environment);
         builder.Services.AddRateLimiter(o => o.AddPolicy("vehicle-lookup", context => System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(ExternalIdentity.FromPrincipal(context.User)?.Key ?? "unknown", _ => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions { PermitLimit = 5, Window = TimeSpan.FromMinutes(1), QueueLimit = 0, AutoReplenishment = true })));
         var app = builder.Build();

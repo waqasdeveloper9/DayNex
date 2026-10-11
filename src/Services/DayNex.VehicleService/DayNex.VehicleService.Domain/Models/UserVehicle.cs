@@ -1,7 +1,7 @@
 using DayNex.Domain.Common.Interface;
 using System.Text.RegularExpressions;
 
-namespace DayNex.VehicleService.Domain;
+namespace DayNex.VehicleService.Domain.Models;
 public sealed partial class UserVehicle : IEntity
 {
     public Guid Id { get; private set; }

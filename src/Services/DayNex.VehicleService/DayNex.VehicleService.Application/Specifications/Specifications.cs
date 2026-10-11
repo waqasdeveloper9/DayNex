@@ -1,5 +1,5 @@
 using DayNex.Domain.Common.Specifications;
-using DayNex.VehicleService.Domain;
+using DayNex.VehicleService.Domain.Models;
 
 namespace DayNex.VehicleService.Application;
 public sealed class VehiclesForUser : BaseSpecification<UserVehicle>

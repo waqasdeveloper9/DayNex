@@ -1,8 +1,8 @@
 using DayNex.Domain.Common.Interface;
-using DayNex.VehicleService.Domain;
+using DayNex.VehicleService.Domain.Models;
 
 namespace DayNex.VehicleService.Application;
-public sealed class CustomerAssetService(ICurrentCustomer customer, IGenericRepository<UserVehicle> vehicles, IGenericRepository<UserCompany> companies, IAssetWriter writer, IVehicleLookup lookup, TimeProvider clock)
+public sealed class CustomerAssetService(ICurrentCustomer customer, IGenericRepository<UserVehicle> vehicles, IGenericRepository<UserCompany> companies, IAssetWriter writer, IVehicleLookup lookup, TimeProvider clock) : ICustomerAssetService
 {
     public async Task<CustomerAssetsDto> GetAsync(CancellationToken token)
     {

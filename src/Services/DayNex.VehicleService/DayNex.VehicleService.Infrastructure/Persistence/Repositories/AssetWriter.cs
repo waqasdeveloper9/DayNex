@@ -2,7 +2,7 @@ using System.Data;
 using System.Linq.Expressions;
 using DayNex.Domain.Common.Interface;
 using DayNex.VehicleService.Application;
-using DayNex.VehicleService.Domain;
+using DayNex.VehicleService.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DayNex.VehicleService.Infrastructure;

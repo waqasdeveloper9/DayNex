@@ -9,7 +9,7 @@ namespace DayNex.VehicleService.API.Controllers;
 [Route("api/assets/me")]
 [Authorize(Policy = AuthenticationDependencies.ApiAccess)]
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-public sealed class CustomerAssetsController(CustomerAssetService assets) : ControllerBase
+public sealed class CustomerAssetsController(ICustomerAssetService assets) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get(CancellationToken token) => Ok(await assets.GetAsync(token));

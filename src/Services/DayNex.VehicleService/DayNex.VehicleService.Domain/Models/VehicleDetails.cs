@@ -1,4 +1,4 @@
-namespace DayNex.VehicleService.Domain;
+namespace DayNex.VehicleService.Domain.Models;
 // Provider schema: optional properties remain nullable; absence is not false or zero.
 public sealed record VehicleDetails
 {

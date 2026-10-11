@@ -6,7 +6,7 @@ using DayNex.Domain.Common.Interface;
 using DayNex.Shared.Http;
 using DayNex.Shared.Http.Authentication;
 using DayNex.VehicleService.Application;
-using DayNex.VehicleService.Domain;
+using DayNex.VehicleService.Domain.Models;
 using DayNex.VehicleService.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

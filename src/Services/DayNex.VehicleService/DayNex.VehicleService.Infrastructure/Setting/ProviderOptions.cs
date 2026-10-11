@@ -14,7 +14,8 @@ public sealed class VehicleDatabaseOptions
 
 public sealed class VehicleIdentityOptions
 {
-    public string BaseUrl { get; set; } = "https://localhost:7166/";
+    public string BaseUrl { get; set; } = "";
+    public string ProfileEndpoint { get; set; } = "";
 }
 
 public sealed class OutboundProxyOptions
