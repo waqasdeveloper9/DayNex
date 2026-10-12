@@ -209,6 +209,25 @@
           "Bearer"
         ]
       }
+    },
+    {
+      "UpstreamPathTemplate": "/api/assets/me/vehicles/{id}/mot",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/assets/me/vehicles/{id}/mot",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vehicle",
+          "Port": 8080
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [
+          "Bearer"
+        ]
+      }
     }
   ],
   "GlobalConfiguration": {

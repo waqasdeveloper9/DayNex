@@ -7,6 +7,9 @@ public sealed class VehicleDbContext(DbContextOptions<VehicleDbContext> options)
     public DbSet<UserVehicle> Vehicles => Set<UserVehicle>();
     public DbSet<UserCompany> Companies => Set<UserCompany>();
 
+    public DbSet<MotVehicleHistory> MotHistories => Set<MotVehicleHistory>();
+    public DbSet<MotTest> MotTests => Set<MotTest>();
+
     protected override void OnModelCreating(ModelBuilder model)
     {
         var vehicles = model.Entity<UserVehicle>();
@@ -23,6 +26,19 @@ public sealed class VehicleDbContext(DbContextOptions<VehicleDbContext> options)
             foreach (var property in typeof(VehicleDetails).GetProperties().Where(p => p.PropertyType == typeof(string)))
                 details.Property(property.Name).HasMaxLength(property.Name.StartsWith("Month") ? 7 : 100);
         });
+        vehicles.Property(v => v.MotLookupStatus).HasMaxLength(32).IsRequired();
+        vehicles.Property(v => v.MotLastAttemptUtc).HasConversion(
+            value => value.HasValue ? (long?)value.Value.UtcTicks : null,
+            value => value.HasValue ? new DateTimeOffset(value.Value, TimeSpan.Zero) : null);
+        vehicles.HasOne(v => v.MotHistory).WithOne().HasForeignKey<MotVehicleHistory>(history => history.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        model.ApplyConfigurationsFromAssembly(typeof(VehicleDbContext).Assembly);
+        vehicles.HasIndex(v => new { v.ScheduledAttemptUtcTicks, v.Id });
+        var job = model.Entity<VehicleRefreshJobState>();
+        job.ToTable("VehicleRefreshJobState");
+        job.HasKey(j => j.Id);
+        job.Property(j => j.Id).ValueGeneratedNever();
+        job.HasData(new VehicleRefreshJobState());
         var companies = model.Entity<UserCompany>();
         companies.ToTable("UserCompanies");
         companies.HasKey(v => v.Id);

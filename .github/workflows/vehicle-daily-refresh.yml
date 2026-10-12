@@ -1,0 +1,65 @@
+name: Vehicle daily refresh
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 2 * * *'
+permissions: {}
+concurrency:
+  group: vehicle-daily-refresh
+  cancel-in-progress: false
+jobs:
+  refresh:
+    if: vars.VEHICLE_REFRESH_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      REFRESH_URL: ${{ vars.VEHICLE_REFRESH_URL }}
+      REFRESH_KEY: ${{ secrets.VEHICLE_REFRESH_KEY }}
+    steps:
+      - name: Refresh bounded batches and report results
+        shell: python
+        run: |
+          import json, os, time, urllib.request, urllib.error, urllib.parse
+          url, key = os.environ['REFRESH_URL'], os.environ['REFRESH_KEY']
+          parsed = urllib.parse.urlparse(url)
+          if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
+              raise SystemExit('Configure a direct HTTPS VehicleService job URL without embedded credentials.')
+          if len(key) < 32:
+              raise SystemExit('Configure the separate VehicleService job key secret.')
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+          opener = urllib.request.build_opener(NoRedirect)
+          totals = {'processed': 0, 'failed': 0, 'skipped': 0, 'batches': 0}
+          complete = False
+          try:
+              for batch in range(100):
+                  for attempt in range(3):
+                      try:
+                          request = urllib.request.Request(url, data=b'', method='POST', headers={'X-DayNex-Job-Key': key, 'Accept': 'application/json'})
+                          with opener.open(request, timeout=120) as response:
+                              result = json.loads(response.read(65536))
+                          break
+                      except urllib.error.HTTPError as error:
+                          if error.code not in (409, 429, 502, 503, 504) or attempt == 2:
+                              raise RuntimeError('Refresh endpoint returned HTTP ' + str(error.code)) from None
+                          time.sleep(60)
+                      except (TimeoutError, urllib.error.URLError):
+                          if attempt == 2:
+                              raise RuntimeError('Refresh host is unavailable or timed out.') from None
+                          time.sleep(60)
+                  totals['batches'] += 1
+                  for field in ('processed', 'failed', 'skipped'):
+                      totals[field] += int(result[field])
+                  if not result['hasMore']:
+                      complete = True
+                      break
+                  time.sleep(1)
+          finally:
+              with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as report:
+                  report.write('# Vehicle refresh report\n\n')
+                  for field, value in totals.items():
+                      report.write('- ' + field + ': ' + str(value) + '\n')
+                  report.write('- Queue drained: ' + str(complete) + '\n')
+          if not complete or totals['failed']:
+              raise SystemExit('Refresh incomplete or provider failures reported. Review the run summary and service logs.')

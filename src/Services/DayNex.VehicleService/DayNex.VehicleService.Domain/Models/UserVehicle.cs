@@ -8,9 +8,14 @@ public sealed partial class UserVehicle : IEntity
     public Guid UserId { get; private set; }
     public string RegistrationNumber { get; private set; } = "";
     public DateTimeOffset CreatedUtc { get; private set; }
+    public long? ScheduledAttemptUtcTicks { get; private set; }
     public DateTimeOffset? LastAttemptUtc { get; private set; }
     public DateTimeOffset? RetrievedUtc { get; private set; }
     public string LookupStatus { get; private set; } = "Pending";
+    public string MotLookupStatus { get; private set; } = "Pending";
+    public DateTimeOffset? MotLastAttemptUtc { get; private set; }
+    public DateTimeOffset? MotRetrievedUtc { get; private set; }
+    public MotVehicleHistory? MotHistory { get; private set; }
     public VehicleDetails? Details { get; private set; }
 
     private UserVehicle()

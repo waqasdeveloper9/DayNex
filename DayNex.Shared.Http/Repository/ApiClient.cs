@@ -25,7 +25,7 @@ public class ApiClient : IApiClient
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Error occurred while calling API");
+            _logger.LogError("API request failed with HTTP status {StatusCode}", (int?)ex.StatusCode);
 
             throw;
         }
@@ -34,6 +34,14 @@ public class ApiClient : IApiClient
     public async Task<T?> PostAsync<T>(string endpoint, object payload, CancellationToken cancellationToken = default)
     {
         using var response = await _httpClient.PostAsJsonAsync(endpoint, payload, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+    }
+
+    public async Task<T?> PostFormAsync<T>(string endpoint, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken = default)
+    {
+        using var content = new FormUrlEncodedContent(fields);
+        using var response = await _httpClient.PostAsync(endpoint, content, cancellationToken);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
     }

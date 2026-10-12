@@ -17,6 +17,9 @@ public sealed class CustomerAssetsController(ICustomerAssetService assets) : Con
     public Task<IActionResult> AddVehicle(AddVehicleRequest input, CancellationToken token) => Execute(async () => Ok(await assets.AddVehicleAsync(input, token)));
     [HttpPost("vehicles/{id:guid}/refresh"), EnableRateLimiting("vehicle-lookup")]
     public Task<IActionResult> Refresh(Guid id, CancellationToken token) => Execute(async () => Ok(await assets.RefreshAsync(id, token)));
+    [HttpGet("vehicles/{id:guid}/mot")]
+    public Task<IActionResult> GetMot(Guid id, CancellationToken token, [FromQuery] int page = 1, [FromQuery] int pageSize = 20) =>
+        Execute(async () => Ok(await assets.GetMotHistoryAsync(id, page, pageSize, token)));
     [HttpPost("companies")]
     public Task<IActionResult> AddCompany(AddCompanyRequest input, CancellationToken token) => Execute(async () => Ok(await assets.AddCompanyAsync(input, token)));
     [HttpDelete("vehicles/{id:guid}")]

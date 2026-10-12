@@ -10,6 +10,7 @@ namespace DayNex.Shared.Http.Interface
     {
         Task<T?> GetAsync<T>(string endpoint, CancellationToken cancellationToken = default);
         Task<T?> PostAsync<T>(string endpoint, object payload, CancellationToken cancellationToken = default);
+        Task<T?> PostFormAsync<T>(string endpoint, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken = default);
         Task<T?> PutAsync<T>(string endpoint, object payload, CancellationToken cancellationToken = default);
         Task DeleteAsync(string endpoint, CancellationToken cancellationToken = default);
     }

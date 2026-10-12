@@ -30,10 +30,12 @@ public static class InfrastructureDependencies
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(VehicleRepository<>));
         services.AddScoped<IAssetWriter, AssetWriter>();
+        services.AddScoped<IVehicleRefreshJobStore, VehicleRefreshJobStore>();
         services.AddHttpContextAccessor();
 
         AddIdentityClient(services);
         AddDvlaClient(services);
+        services.AddVehicleMotInfrastructure(configuration);
         return services;
     }
 

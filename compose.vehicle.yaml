@@ -9,6 +9,13 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: ${DAYNEX_VEHICLE_CONNECTION:?Configure Vehicle database secret first}
       IdentityService__BaseUrl: http://identity:8080/
+      VehicleRefresh__Enabled: ${DAYNEX_REFRESH_ENABLED:-false}
+      VehicleRefresh__ApiKey: ${DAYNEX_REFRESH_KEY:-}
+      Mot__Enabled: ${DAYNEX_MOT_ENABLED:-false}
+      Mot__TokenEndpoint: ${DAYNEX_MOT_TOKEN_ENDPOINT:-}
+      Mot__ClientId: ${DAYNEX_MOT_CLIENT_ID:-}
+      Mot__ClientSecret: ${DAYNEX_MOT_CLIENT_SECRET:-}
+      Mot__ApiKey: ${DAYNEX_MOT_API_KEY:-}
       Dvla__Enabled: ${DAYNEX_DVLA_ENABLED:-false}
       Dvla__ApiKey: ${DAYNEX_DVLA_KEY:-}
       Dvla__Proxy__Enabled: ${DAYNEX_PROXY_ENABLED:-false}

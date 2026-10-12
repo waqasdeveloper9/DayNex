@@ -302,6 +302,30 @@
           }
         }
       ]
+    },
+    {
+      "name": "13 MOT history for own vehicle",
+      "request": {
+        "method": "GET",
+        "url": "{{gateway_url}}/api/assets/me/vehicles/{{vehicle_id}}/mot?page=1&pageSize=20"
+      }
+    },
+    {
+      "name": "14 Scheduled refresh - direct Vehicle API and separate key",
+      "request": {
+        "method": "POST",
+        "auth": {
+          "type": "noauth"
+        },
+        "header": [
+          {
+            "key": "X-DayNex-Job-Key",
+            "value": "{{vehicle_refresh_key}}"
+          }
+        ],
+        "url": "{{vehicle_url}}/internal/jobs/vehicles/refresh",
+        "description": "Direct VehicleService HTTPS URL when hosted. Requires enabled job, migrations and separate job key. Never use a customer access token here."
+      }
     }
   ]
 }

@@ -27,20 +27,34 @@ public sealed class TestVehicleLookup : IVehicleLookup {
   Calls++;return Task.FromResult(Fail?new VehicleLookupResult("Unavailable"):new("Available",new VehicleDetails {RegistrationNumber=registration,Make="TEST",TaxStatus="Taxed",MotExpiryDate=new(2027,3,1)}));
  }
 }
+public sealed class TestMotLookup : IMotHistoryClient {
+ public int Calls {get; private set;}
+ public Task<MotLookupResult> FetchAsync(Guid vehicleId,string registration,CancellationToken token) {
+  Calls++;
+  return Task.FromResult(new MotLookupResult("Available",new MotVehicleHistory(vehicleId) {
+   Registration=registration,RetrievedUtc=DateTimeOffset.UtcNow,HasOutstandingRecall="No",
+   Tests=[new MotTest {HistoryId=vehicleId,DataSource="DVSA",TestResult="PASSED",OdometerResultType="READ",MotTestNumber="TEST",CompletedDate=DateTimeOffset.UtcNow}]
+  }));
+ }
+}
 public sealed class TestCustomer(IHttpContextAccessor accessor) : ICurrentCustomer {
  public Task<Guid> GetUserIdAsync(CancellationToken token)=>Task.FromResult(Guid.Parse(ExternalIdentity.FromPrincipal(accessor.HttpContext!.User)!.Key.Split(':')[1]));
 }
 public sealed class VehicleFactory : WebApplicationFactory<DayNex.VehicleService.API.Program> {
  private readonly SqliteConnection connection=new("Data Source=:memory:");
+ public bool EnableRefresh {get;init;}
+ public const string JobKey="test-job-key-at-least-32-characters-long";
  public TestVehicleLookup Lookup {get;}=new();
+ public TestMotLookup Mot {get;}=new();
  protected override void ConfigureWebHost(IWebHostBuilder builder) {
   connection.Open();
-  builder.UseEnvironment("Testing").ConfigureAppConfiguration((_,config)=>config.AddInMemoryCollection(TestAuthentication.Configuration));
+  builder.UseEnvironment("Testing").ConfigureAppConfiguration((_,config)=>config.AddInMemoryCollection(TestAuthentication.Configuration).AddInMemoryCollection(new Dictionary<string,string?> {["VehicleRefresh:Enabled"]=EnableRefresh.ToString(),["VehicleRefresh:ApiKey"]=JobKey}));
   builder.ConfigureServices(services=>{
    services.RemoveAll<VehicleDbContext>();
    services.AddScoped(_=>new VehicleDbContext(new DbContextOptionsBuilder<VehicleDbContext>().UseSqlite(connection).Options));
    services.RemoveAll<ICurrentCustomer>();services.AddScoped<ICurrentCustomer,TestCustomer>();
    services.RemoveAll<IVehicleLookup>();services.AddSingleton<IVehicleLookup>(Lookup);
+   services.RemoveAll<IMotHistoryClient>();services.AddSingleton<IMotHistoryClient>(Mot);
    TestAuthentication.Configure(services);
   });
  }
@@ -75,13 +89,18 @@ public sealed class VehicleTests {
   added.EnsureSuccessStatusCode();var vehicle=(await added.Content.ReadFromJsonAsync<VehicleDto>())!;
   Assert.Equal("Available",vehicle.LookupStatus);Assert.Equal("TEST",vehicle.Details!.Make);
   (await client.PostAsJsonAsync(path+"/vehicles",new AddVehicleRequest("AB12CDE"))).EnsureSuccessStatusCode();
-  Assert.Equal(1,factory.Lookup.Calls);
+  Assert.Equal(1,factory.Lookup.Calls);Assert.Equal(1,factory.Mot.Calls);
+  var motPath=path+"/vehicles/"+vehicle.Id+"/mot";
+  var history=await client.GetFromJsonAsync<MotHistoryDto>(motPath);
+  Assert.Equal("Available",history!.Status);Assert.Single(history.Tests);
+  Assert.Equal(HttpStatusCode.BadRequest,(await client.GetAsync(motPath+"?pageSize=1000")).StatusCode);
   (await client.PostAsJsonAsync(path+"/companies",new AddCompanyRequest("sc123456"))).EnsureSuccessStatusCode();
   (await client.PostAsJsonAsync(path+"/companies",new AddCompanyRequest("SC123456"))).EnsureSuccessStatusCode();
   var own=await client.GetFromJsonAsync<CustomerAssetsDto>(path);Assert.Single(own!.Vehicles);Assert.Single(own.Companies);
   Assert.Equal(HttpStatusCode.TooManyRequests,(await client.PostAsync(path+"/vehicles/"+vehicle.Id+"/refresh",null)).StatusCode);
   client.DefaultRequestHeaders.Authorization=new("Bearer",TestAuthentication.Token(Guid.NewGuid()));
   Assert.Empty((await client.GetFromJsonAsync<CustomerAssetsDto>(path))!.Vehicles);
+  Assert.Equal(HttpStatusCode.NotFound,(await client.GetAsync(path+"/vehicles/"+vehicle.Id+"/mot")).StatusCode);
   Assert.Equal(HttpStatusCode.NotFound,(await client.DeleteAsync(path+"/vehicles/"+vehicle.Id)).StatusCode);
   Assert.Equal(HttpStatusCode.NotFound,(await client.PostAsync(path+"/vehicles/"+vehicle.Id+"/refresh",null)).StatusCode);
   client.DefaultRequestHeaders.Authorization=new("Bearer",TestAuthentication.Token(owner));
