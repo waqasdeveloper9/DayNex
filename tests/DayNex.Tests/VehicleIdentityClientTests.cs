@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using DayNex.Shared.Http;
-using DayNex.VehicleService.Infrastructure;
+using DayNex.UserInfoService.Infrastructure;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
@@ -17,7 +17,7 @@ public sealed class VehicleIdentityClientTests
         var handler = new ProfileHandler(userId);
         using var http = new HttpClient(handler) { BaseAddress = new Uri("https://identity.example/") };
         var apiClient = new ApiClient(http, NullLogger<ApiClient>.Instance);
-        var options = Options.Create(new VehicleIdentityOptions { ProfileEndpoint = "configured/profile" });
+        var options = Options.Create(new UserInfoIdentityOptions { ProfileEndpoint = "configured/profile" });
         var customer = new CurrentCustomer(apiClient, options);
 
         Assert.Equal(userId, await customer.GetUserIdAsync(default));
@@ -38,7 +38,7 @@ public sealed class VehicleIdentityClientTests
             BaseAddress = new Uri("https://identity.example/")
         };
         var customer = new CurrentCustomer(new ApiClient(http, NullLogger<ApiClient>.Instance),
-            Options.Create(new VehicleIdentityOptions { ProfileEndpoint = "configured/profile" }));
+            Options.Create(new UserInfoIdentityOptions { ProfileEndpoint = "configured/profile" }));
 
         await Assert.ThrowsAsync<HttpRequestException>(() => customer.GetUserIdAsync(default));
     }

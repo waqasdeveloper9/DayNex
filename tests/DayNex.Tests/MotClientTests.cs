@@ -1,8 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using DayNex.Shared.Http;
-using DayNex.VehicleService.Application;
-using DayNex.VehicleService.Infrastructure;
+using DayNex.UserInfoService.Application;
+using DayNex.UserInfoService.Infrastructure;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;

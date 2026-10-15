@@ -194,7 +194,8 @@
     {
       "UpstreamPathTemplate": "/api/assets/me/companies/{id}",
       "UpstreamHttpMethod": [
-        "DELETE"
+        "DELETE",
+        "GET"
       ],
       "DownstreamPathTemplate": "/api/assets/me/companies/{id}",
       "DownstreamScheme": "https",
@@ -216,6 +217,64 @@
         "GET"
       ],
       "DownstreamPathTemplate": "/api/assets/me/vehicles/{id}/mot",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7240
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [
+          "Bearer"
+        ]
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/api/assets/me/companies/{id}/refresh",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/assets/me/companies/{id}/refresh",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7240
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [
+          "Bearer"
+        ]
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/api/assets/me/location",
+      "UpstreamHttpMethod": [
+        "GET",
+        "PUT"
+      ],
+      "DownstreamPathTemplate": "/api/assets/me/location",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7240
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [
+          "Bearer"
+        ]
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/api/assets/me/onboarding",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "DownstreamPathTemplate": "/api/assets/me/onboarding",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {

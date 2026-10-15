@@ -5,9 +5,9 @@ using System.Text.Json;
 using DayNex.Domain.Common.Interface;
 using DayNex.Shared.Http;
 using DayNex.Shared.Http.Authentication;
-using DayNex.VehicleService.Application;
-using DayNex.VehicleService.Domain.Models;
-using DayNex.VehicleService.Infrastructure;
+using DayNex.UserInfoService.Application;
+using DayNex.UserInfoService.Domain.Models;
+using DayNex.UserInfoService.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -40,27 +40,31 @@ public sealed class TestMotLookup : IMotHistoryClient {
 public sealed class TestCustomer(IHttpContextAccessor accessor) : ICurrentCustomer {
  public Task<Guid> GetUserIdAsync(CancellationToken token)=>Task.FromResult(Guid.Parse(ExternalIdentity.FromPrincipal(accessor.HttpContext!.User)!.Key.Split(':')[1]));
 }
-public sealed class VehicleFactory : WebApplicationFactory<DayNex.VehicleService.API.Program> {
+public sealed class VehicleFactory : WebApplicationFactory<DayNex.UserInfoService.API.Program> {
  private readonly SqliteConnection connection=new("Data Source=:memory:");
  public bool EnableRefresh {get;init;}
  public const string JobKey="test-job-key-at-least-32-characters-long";
+ public TestCompanyClient Company {get;}=new();
+ public TestCouncilClient Council {get;}=new();
  public TestVehicleLookup Lookup {get;}=new();
  public TestMotLookup Mot {get;}=new();
  protected override void ConfigureWebHost(IWebHostBuilder builder) {
   connection.Open();
   builder.UseEnvironment("Testing").ConfigureAppConfiguration((_,config)=>config.AddInMemoryCollection(TestAuthentication.Configuration).AddInMemoryCollection(new Dictionary<string,string?> {["VehicleRefresh:Enabled"]=EnableRefresh.ToString(),["VehicleRefresh:ApiKey"]=JobKey}));
   builder.ConfigureServices(services=>{
-   services.RemoveAll<VehicleDbContext>();
-   services.AddScoped(_=>new VehicleDbContext(new DbContextOptionsBuilder<VehicleDbContext>().UseSqlite(connection).Options));
+   services.RemoveAll<UserInfoDbContext>();
+   services.AddScoped(_=>new UserInfoDbContext(new DbContextOptionsBuilder<UserInfoDbContext>().UseSqlite(connection).Options));
    services.RemoveAll<ICurrentCustomer>();services.AddScoped<ICurrentCustomer,TestCustomer>();
    services.RemoveAll<IVehicleLookup>();services.AddSingleton<IVehicleLookup>(Lookup);
+   services.RemoveAll<ICompanyProfileClient>();services.AddSingleton<ICompanyProfileClient>(Company);
+   services.RemoveAll<ICouncilClient>();services.AddSingleton<ICouncilClient>(Council);
    services.RemoveAll<IMotHistoryClient>();services.AddSingleton<IMotHistoryClient>(Mot);
    TestAuthentication.Configure(services);
   });
  }
  public HttpClient Client() {
   var client=CreateClient(new(){BaseAddress=new Uri("https://localhost")});
-  using var scope=Services.CreateScope();scope.ServiceProvider.GetRequiredService<VehicleDbContext>().Database.EnsureCreated();
+  using var scope=Services.CreateScope();scope.ServiceProvider.GetRequiredService<UserInfoDbContext>().Database.EnsureCreated();
   return client;
  }
  protected override void Dispose(bool disposing) {base.Dispose(disposing);if(disposing)connection.Dispose();}
@@ -121,7 +125,7 @@ public sealed class VehicleTests {
  [Fact]
  public async Task PersistenceLeasePreventsDuplicateLookupAndDeletedRowsAreNotResurrected() {
   await using var connection=new SqliteConnection("Data Source=:memory:");await connection.OpenAsync();
-  await using var db=new VehicleDbContext(new DbContextOptionsBuilder<VehicleDbContext>().UseSqlite(connection).Options);
+  await using var db=new UserInfoDbContext(new DbContextOptionsBuilder<UserInfoDbContext>().UseSqlite(connection).Options);
   await db.Database.EnsureCreatedAsync();var writer=new AssetWriter(db);
   var now=DateTimeOffset.UtcNow;var vehicle=await writer.AddVehicleAsync(UserVehicle.Create(Guid.NewGuid(),"AB12CDE",now),default);
   Assert.True(await writer.TryBeginLookupAsync(vehicle.UserId,vehicle.Id,now,default));

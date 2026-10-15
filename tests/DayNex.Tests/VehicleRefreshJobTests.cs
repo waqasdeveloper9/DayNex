@@ -1,8 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
-using DayNex.VehicleService.Application;
-using DayNex.VehicleService.Domain.Models;
-using DayNex.VehicleService.Infrastructure;
+using DayNex.UserInfoService.Application;
+using DayNex.UserInfoService.Domain.Models;
+using DayNex.UserInfoService.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,7 +42,7 @@ public sealed class VehicleRefreshJobTests
         await using var factory = new VehicleFactory { EnableRefresh = true }; using var client = factory.Client();
         using (var scope = factory.Services.CreateScope())
         {
-            var db = scope.ServiceProvider.GetRequiredService<VehicleDbContext>();
+            var db = scope.ServiceProvider.GetRequiredService<UserInfoDbContext>();
             db.Vehicles.AddRange(UserVehicle.Create(Guid.NewGuid(), "AB12CDE", DateTimeOffset.UtcNow),
                 UserVehicle.Create(Guid.NewGuid(), "XY12ZZZ", DateTimeOffset.UtcNow));
             await db.SaveChangesAsync();
@@ -66,7 +66,7 @@ public sealed class VehicleRefreshJobTests
         factory.Lookup.Fail = true;
         using (var scope = factory.Services.CreateScope())
         {
-            var db = scope.ServiceProvider.GetRequiredService<VehicleDbContext>();
+            var db = scope.ServiceProvider.GetRequiredService<UserInfoDbContext>();
             db.Vehicles.Add(UserVehicle.Create(Guid.NewGuid(), "AB12CDE", DateTimeOffset.UtcNow)); await db.SaveChangesAsync();
         }
         client.DefaultRequestHeaders.Add("X-DayNex-Job-Key", VehicleFactory.JobKey);
@@ -78,7 +78,7 @@ public sealed class VehicleRefreshJobTests
     public async Task SqlLeasePreventsOverlapAndExpiredOwnerCannotReleaseNewLease()
     {
         await using var connection = new SqliteConnection("Data Source=:memory:"); await connection.OpenAsync();
-        await using var db = new VehicleDbContext(new DbContextOptionsBuilder<VehicleDbContext>().UseSqlite(connection).Options);
+        await using var db = new UserInfoDbContext(new DbContextOptionsBuilder<UserInfoDbContext>().UseSqlite(connection).Options);
         await db.Database.EnsureCreatedAsync(); var store = new VehicleRefreshJobStore(db); var now = new DateTimeOffset(2026, 10, 11, 0, 0, 0, TimeSpan.Zero);
         var first = Guid.NewGuid(); var next = Guid.NewGuid();
         Assert.True(await store.AcquireAsync(first, now, default));

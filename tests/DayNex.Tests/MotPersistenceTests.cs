@@ -1,6 +1,6 @@
-using DayNex.VehicleService.Application;
-using DayNex.VehicleService.Domain.Models;
-using DayNex.VehicleService.Infrastructure;
+using DayNex.UserInfoService.Application;
+using DayNex.UserInfoService.Domain.Models;
+using DayNex.UserInfoService.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -14,7 +14,7 @@ public sealed class MotPersistenceTests
     {
         await using var connection = new SqliteConnection("Data Source=:memory:");
         await connection.OpenAsync();
-        await using var db = new VehicleDbContext(new DbContextOptionsBuilder<VehicleDbContext>()
+        await using var db = new UserInfoDbContext(new DbContextOptionsBuilder<UserInfoDbContext>()
             .UseSqlite(connection).Options);
         await db.Database.EnsureCreatedAsync();
         var writer = new AssetWriter(db);

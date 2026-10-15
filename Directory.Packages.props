@@ -3,6 +3,8 @@
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 	</PropertyGroup>
 	<ItemGroup>
+        <!-- Security override: SqlClient transitively requests vulnerable Pkcs 9.0.11. -->
+        <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
         <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.12" />
         <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.12" />
         <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.10.0" />

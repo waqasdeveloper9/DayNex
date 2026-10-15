@@ -1,4 +1,4 @@
-param([switch]$Build, [switch]$Vehicle)
+param([switch]$Build, [Alias("Vehicle")][switch]$UserInfo)
 $ErrorActionPreference = 'Stop'
 $taskRoot = Split-Path $PSScriptRoot -Parent
 
@@ -26,6 +26,9 @@ function Read-Connection([string]$secretId) {
 }
 
 $vehicleVariables = @{
+    DAYNEX_COMPANIES_ENABLED = 'CompaniesHouse:Enabled'
+    DAYNEX_COMPANIES_KEY = 'CompaniesHouse:ApiKey'
+    DAYNEX_COUNCIL_ENABLED = 'Council:Enabled'
     DAYNEX_REFRESH_ENABLED = 'VehicleRefresh:Enabled'
     DAYNEX_REFRESH_KEY = 'VehicleRefresh:ApiKey'
     DAYNEX_DVLA_ENABLED = 'Dvla:Enabled'
@@ -40,7 +43,7 @@ $vehicleVariables = @{
     DAYNEX_MOT_CLIENT_SECRET = 'Mot:ClientSecret'
     DAYNEX_MOT_API_KEY = 'Mot:ApiKey'
 }
-$keys = @('DAYNEX_IDENTITY_CONNECTION', 'DAYNEX_HOLIDAY_CONNECTION', 'DAYNEX_VEHICLE_CONNECTION') +
+$keys = @('DAYNEX_IDENTITY_CONNECTION', 'DAYNEX_HOLIDAY_CONNECTION', 'DAYNEX_USERINFO_CONNECTION') +
     @($vehicleVariables.Keys)
 $original = @{}
 foreach ($key in $keys) { $original[$key] = [Environment]::GetEnvironmentVariable($key, 'Process') }
@@ -50,14 +53,14 @@ try {
     $env:DAYNEX_IDENTITY_CONNECTION = Read-Connection 'DayNex-IdentityService-Development'
     $env:DAYNEX_HOLIDAY_CONNECTION = Read-Connection 'DayNex-HolidayService-Development'
     $arguments = @('compose', '-f', 'compose.yaml')
-    if ($Vehicle) {
-        $env:DAYNEX_VEHICLE_CONNECTION = Read-Connection 'DayNex-VehicleService-Development'
+    if ($UserInfo) {
+        $env:DAYNEX_USERINFO_CONNECTION = Read-Connection 'DayNex-VehicleService-Development'
         $config = Read-UserSecrets 'DayNex-VehicleService-Development'
         foreach ($key in $vehicleVariables.Keys) {
             $value = Get-SecretValue $config $vehicleVariables[$key]
-            [Environment]::SetEnvironmentVariable($key, [string]$value, 'Process')
+            if ($null -ne $value) { [Environment]::SetEnvironmentVariable($key, [string]$value, 'Process') }
         }
-        $arguments += @('-f', 'compose.vehicle.yaml')
+        $arguments += @('-f', 'compose.userinfo.yaml')
     }
     $arguments += @('up', '--detach')
     if ($Build) { $arguments += '--build' }

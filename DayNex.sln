@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
@@ -52,15 +52,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.IdentityService.Appl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.Tests", "tests\DayNex.Tests\DayNex.Tests.csproj", "{9841DF5C-D1E7-45CE-BF80-F9557182C33D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DayNex.VehicleService", "DayNex.VehicleService", "{8A3BF733-92FD-8273-A76F-83231CDBF0CE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DayNex.UserInfoService", "DayNex.UserInfoService", "{8A3BF733-92FD-8273-A76F-83231CDBF0CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.VehicleService.Domain", "src\Services\DayNex.VehicleService\DayNex.VehicleService.Domain\DayNex.VehicleService.Domain.csproj", "{234F3EA5-74DA-4822-9A04-497591D0B5A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.UserInfoService.Domain", "src\Services\DayNex.UserInfoService\DayNex.UserInfoService.Domain\DayNex.UserInfoService.Domain.csproj", "{234F3EA5-74DA-4822-9A04-497591D0B5A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.VehicleService.Application", "src\Services\DayNex.VehicleService\DayNex.VehicleService.Application\DayNex.VehicleService.Application.csproj", "{8EDFE641-E1B4-438B-B208-7BA776ABB87A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.UserInfoService.Application", "src\Services\DayNex.UserInfoService\DayNex.UserInfoService.Application\DayNex.UserInfoService.Application.csproj", "{8EDFE641-E1B4-438B-B208-7BA776ABB87A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.VehicleService.Infrastructure", "src\Services\DayNex.VehicleService\DayNex.VehicleService.Infrastructure\DayNex.VehicleService.Infrastructure.csproj", "{CEF8B962-801C-4AB5-88C2-820D5AB1D52F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.UserInfoService.Infrastructure", "src\Services\DayNex.UserInfoService\DayNex.UserInfoService.Infrastructure\DayNex.UserInfoService.Infrastructure.csproj", "{CEF8B962-801C-4AB5-88C2-820D5AB1D52F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.VehicleService.API", "src\Services\DayNex.VehicleService\DayNex.VehicleService.API\DayNex.VehicleService.API.csproj", "{FBA13B2A-FA20-4E4C-ADE6-1DCB9F865C97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayNex.UserInfoService.API", "src\Services\DayNex.UserInfoService\DayNex.UserInfoService.API\DayNex.UserInfoService.API.csproj", "{FBA13B2A-FA20-4E4C-ADE6-1DCB9F865C97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

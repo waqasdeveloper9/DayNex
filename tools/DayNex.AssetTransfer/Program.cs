@@ -1,5 +1,5 @@
 using System.Data;
-using DayNex.VehicleService.Domain.Models;
+using DayNex.UserInfoService.Domain.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 if(args.Length!=1 || args[0]!="--execute") {
